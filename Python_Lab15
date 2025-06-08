@@ -1,0 +1,95 @@
+class Character:
+    def __init__(self, name, level, health, attack):
+        self.name = name
+        self.level = level
+        self.health = health
+        self.attack = attack
+
+    def show_info(self):
+        print(f"Ім'я: {self.name}, Рівень: {self.level}, Здоров'я: {self.health}, Атака: {self.attack}")
+
+    def attack_enemy(self, enemy):
+        if self.health <= 0:
+            print(f"{self.name} не може атакувати, бо переможений.")
+            return
+        if enemy.health > 0:
+            enemy.health -= self.attack
+            print(f"{self.name} атакує {enemy.name} на {self.attack} одиниць!")
+            if enemy.health <= 0:
+                enemy.health = 0
+                print(f"{enemy.name} переможений!")
+        else:
+            print(f"{enemy.name} вже переможений.")
+
+
+class Warrior(Character):
+    def __init__(self, name, level, health, attack, armor):
+        super().__init__(name, level, health, attack)
+        self.armor = armor
+
+    def heal(self):
+        self.health += 20
+        print(f"{self.name} відновив здоров'я до {self.health} (Воїн).")
+
+class Mage(Character):
+    def __init__(self, name, level, health, attack, mana):
+        super().__init__(name, level, health, attack)
+        self.mana = mana
+
+    def heal(self):
+        if self.mana >= 10:
+            self.health += 30
+            self.mana -= 10
+            print(f"{self.name} зцілився магією. Здоров'я: {self.health}, Мана: {self.mana}")
+        else:
+            print(f"{self.name} не має достатньо мани для зцілення.")
+
+class Archer(Character):
+    def __init__(self, name, level, health, attack, arrows):
+        super().__init__(name, level, health, attack)
+        self.arrows = arrows
+
+    def attack_enemy(self, enemy):
+        if self.health <= 0:
+            print(f"{self.name} не може стріляти, бо переможений.")
+            return
+        if self.arrows <= 0:
+            print(f"{self.name} не має стріл!")
+            return
+        if enemy.health > 0:
+            self.arrows -= 1
+            enemy.health -= self.attack
+            print(f"{self.name} стріляє в {enemy.name} на {self.attack} шкоди. Залишилось стріл: {self.arrows}")
+            if enemy.health <= 0:
+                enemy.health = 0
+                print(f"{enemy.name} переможений!")
+        else:
+            print(f"{enemy.name} вже переможений.")
+
+warrior = Warrior("Леон", 6, 120, 18, armor=50)
+mage = Mage("Еліна", 5, 70, 25, mana=30)
+archer = Archer("Робін", 4, 80, 20, arrows=3)
+
+print("\n=== Початкові параметри ===")
+warrior.show_info()
+mage.show_info()
+archer.show_info()
+
+print("\n=== Бій ===")
+archer.attack_enemy(warrior)
+mage.attack_enemy(archer)
+warrior.attack_enemy(mage)
+
+archer.attack_enemy(mage)
+archer.attack_enemy(mage)
+archer.attack_enemy(mage)      # Стріли закінчились
+
+print("\n=== Лікування ===")
+warrior.heal()
+mage.heal()
+mage.heal()
+
+print("\n=== Кінцеві параметри ===")
+warrior.show_info()
+mage.show_info()
+archer.show_info()
